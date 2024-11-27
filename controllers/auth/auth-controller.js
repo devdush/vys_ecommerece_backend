@@ -66,7 +66,7 @@ const loginUser = async (req, res) => {
         email: checkUser.email,
       },
       "CLIENT_SECRET_KEY",
-      { expiresIn: "60m" }
+      { expiresIn: "500m" }
     );
     res.cookie("token", token, { httpOnly: true, secure: false }).json({
       success: true,
@@ -111,7 +111,7 @@ const authMiddleware = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({
+    res.json({
       success: false,
       message: "Unauthorized user!",
     });
