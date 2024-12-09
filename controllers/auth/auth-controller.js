@@ -68,7 +68,12 @@ const loginUser = async (req, res) => {
       "CLIENT_SECRET_KEY",
       { expiresIn: "500m" }
     );
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    res.cookie("token", token, {
+      httpOnly: true, // Security: Cannot be accessed via JS
+      secure: process.env.NODE_ENV === "production", // Only true in production (when using HTTPS)
+      sameSite: "None", // To allow cross-origin cookies (for some use cases)
+      maxAge: 500 * 60 * 1000, // Expiry time of 500 minutes in milliseconds
+      path: "/", // Cookie is available to all routes }).json({
       success: true,
       message: "Logged in successfully",
       user: {
