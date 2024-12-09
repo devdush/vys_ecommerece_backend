@@ -6,6 +6,11 @@ const BrandSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  imageUrl:{
+    type:String,
+    required:true,
+    
+  }
 });
 const Brand = mongoose.model("Brand", BrandSchema);
 module.exports = Brand;

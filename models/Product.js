@@ -59,7 +59,7 @@ const ProductSchema = new mongoose.Schema(
       }),
     },
     colors: {
-      type: String,
+      type: [String],
       required: false,
     },
     shortDescription: {

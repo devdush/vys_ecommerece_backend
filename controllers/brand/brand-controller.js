@@ -2,9 +2,11 @@ const Brand = require("../../models/Brand");
 
 const postBrand = async (req, res) => {
   const brandTitle = req.body.brandTitle;
+  const imageUrl = req.body.imageUrl;
   try {
     const newBrand = new Brand({
       brandTitle,
+      imageUrl
     });
     await newBrand.save();
     res.status(201).json({

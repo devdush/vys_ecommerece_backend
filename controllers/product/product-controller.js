@@ -5,6 +5,8 @@ const Product = require("../../models/Product");
 const postProduct = async (req, res) => {
   const categoryId = req.body.categoryId;
   const brandId = req.body.brandId;
+  console.log(req.body);
+
   try {
     const {
       itemCode,
@@ -111,6 +113,8 @@ const getProduct = async (req, res) => {
 };
 const getProductByCategory = async (req, res) => {
   const { id } = req.params; // Category ID
+  console.log(id);
+  
   const filters = req.query; // Query parameters for filtering
 
   try {
@@ -119,14 +123,20 @@ const getProductByCategory = async (req, res) => {
 
     // Add query filters dynamically if provided
     if (filters.brand) {
-      query["brand.brandTitle"] = filters.brand; // Assuming products have a `brand` field
+      // Handle multiple brands
+      const brands = Array.isArray(filters.brand)
+        ? filters.brand
+        : filters.brand.split(","); // Split by comma if passed as a single string
+      query["brand.brandTitle"] = { $in: brands }; // Match any of the brands
     }
+
     if (filters.priceMin && filters.priceMax) {
-      query["price"] = {
+      query["sales_price"] = {
         $gte: parseFloat(filters.priceMin), // Minimum price
         $lte: parseFloat(filters.priceMax), // Maximum price
       };
     }
+
     const products = await Product.find(query);
     console.log("Query:", query); // Debugging purposes
 
@@ -149,10 +159,82 @@ const getProductByCategory = async (req, res) => {
     });
   }
 };
+const getFeaturedProducts = async (req, res) => {
+  try {
+    console.log("Fetching featured products");
+    const featuredProducts = await Product.find({ featured: true });
+    res.status(200).json({
+      success: true,
+      data: featuredProducts,
+    });
+  } catch (error) {
+    console.error("Error fetching featured products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch featured products",
+      error: error.message,
+    });
+  }
+};
+const getOnSaleProducts = async (req, res) => {
+  try {
+    console.log("Fetching featured products");
+    const onSaleProducts = await Product.find({ onSale: true });
+    res.status(200).json({
+      success: true,
+      data: onSaleProducts,
+    });
+  } catch (error) {
+    console.error("Error fetching featured products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch featured products",
+      error: error.message,
+    });
+  }
+};
+const getTopRatedProducts = async (req, res) => {
+  try {
+    console.log("Fetching featured products");
+    const topRatedProducts = await Product.find({ topRated: true });
+    res.status(200).json({
+      success: true,
+      data: topRatedProducts,
+    });
+  } catch (error) {
+    console.error("Error fetching featured products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch featured products",
+      error: error.message,
+    });
+  }
+};
+const getSpecialOfferProducts = async (req, res) => {
+  try {
+    console.log("Fetching featured products");
+    const specialOffersProducts = await Product.find({ specialOffers: true });
+    res.status(200).json({
+      success: true,
+      data: specialOffersProducts,
+    });
+  } catch (error) {
+    console.error("Error fetching featured products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch featured products",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   postProduct,
   getProduct,
   getProducts,
   getProductByCategory,
+  getFeaturedProducts,
+  getOnSaleProducts,
+  getTopRatedProducts,
+  getSpecialOfferProducts,
 };
