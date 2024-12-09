@@ -19,7 +19,9 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin:
+      "http://localhost:3000" ||
+      "http://vys.lk.s3-website-us-east-1.amazonaws.com/",
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",
