@@ -19,10 +19,21 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin:
-      "http://localhost:3000" ||
-      "http://vys.lk.s3-website-us-east-1.amazonaws.com/",
-    methods: ["GET", "POST", "DELETE", "PUT"],
+    origin: (origin, callback) => {
+      // Allow requests from localhost:3000 (React development) and your S3 URL
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "http://vys.lk.s3-website-us-east-1.amazonaws.com"
+      ];
+      if (allowedOrigins.includes(origin) || !origin) {
+        // If origin is in the allowed list or no origin (for Postman/cURL requests), proceed
+        callback(null, true);
+      } else {
+        // Reject if origin is not in the allowed list
+        callback(new Error("CORS policy does not allow access from this origin"));
+      }
+    },
+    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"], // Allow required methods
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -30,7 +41,7 @@ app.use(
       "Expires",
       "Pragma",
     ],
-    credentials: true,
+    credentials: true, // If you need to send cookies with requests
   })
 );
 app.use(cookieParser());
