@@ -17,20 +17,23 @@ mongoose
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const cors = require("cors");
+
 app.use(
   cors({
-    origin: "http://vys.lk.s3-website-us-east-1.amazonaws.com/",
-    methods: ["GET", "POST", "DELETE", "PUT"],
+    origin: "*", // Allow all origins
+    methods: ["GET", "POST", "DELETE", "PUT"], // Specify allowed HTTP methods
     allowedHeaders: [
       "Content-Type",
       "Authorization",
       "Cache-Control",
       "Expires",
       "Pragma",
-    ],
-    credentials: true,
+    ], // Specify allowed headers
+    credentials: false, // Set to false since credentials can't be used with '*' origin
   })
 );
+
 app.use(cookieParser());
 app.use(express.json());
 
