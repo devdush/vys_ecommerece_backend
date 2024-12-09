@@ -42,6 +42,8 @@ const registerUser = async (req, res) => {
 };
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+
+  
   try {
     const checkUser = await User.findOne({ email });
     if (!checkUser)
@@ -68,9 +70,25 @@ const loginUser = async (req, res) => {
       "CLIENT_SECRET_KEY",
       { expiresIn: "500m" }
     );
-    res.cookie("token", token, { httpOnly: false, secure: false }).json({
+    // res.cookie("token", token, { httpOnly: true, secure: true }).json({
+    //   success: true,
+    //   message: "Logged in successfully",
+    //   user: {
+    //     email: checkUser.email,
+    //     firstName: checkUser.firstName,
+    //     lastName: checkUser.lastName,
+    //     primaryPhoneNumber: checkUser.primaryPhoneNumber,
+    //     secondaryPhoneNumber: checkUser.secondaryPhoneNumber,
+    //     role: checkUser.role,
+    //     id: checkUser._id,
+    //   },
+    // });
+    console.log(token);
+    
+    res.json({
       success: true,
       message: "Logged in successfully",
+      token,
       user: {
         email: checkUser.email,
         firstName: checkUser.firstName,
@@ -98,8 +116,8 @@ const logoutUser = (req, res) => {
 };
 
 const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
-  console.log(token);
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token)
     return res.json({
