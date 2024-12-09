@@ -19,20 +19,23 @@ const PORT = process.env.PORT || 5000;
 
 const cors = require("cors");
 
+const cors = require("cors");
+
 app.use(
   cors({
-    origin: "*", // Allow all origins
-    methods: ["GET", "POST", "DELETE", "PUT"], // Specify allowed HTTP methods
+    origin: "http://vys.lk.s3-website-us-east-1.amazonaws.com", // Allow this specific origin
+    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"], // Allow the required methods
     allowedHeaders: [
       "Content-Type",
       "Authorization",
       "Cache-Control",
       "Expires",
       "Pragma",
-    ], // Specify allowed headers
-    credentials: false, // Set to false since credentials can't be used with '*' origin
+    ],
+    credentials: true, // If you need cookies/credentials
   })
 );
+
 
 app.use(cookieParser());
 app.use(express.json());
