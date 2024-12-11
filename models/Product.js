@@ -58,6 +58,19 @@ const ProductSchema = new mongoose.Schema(
         },
       }),
     },
+    warranty: {
+      type: new mongoose.Schema({
+        id: {
+          type: String,
+        },
+        duration: {
+          type: String,
+        },
+        imageUrl: {
+          type: String,
+        },
+      }),
+    },
     colors: {
       type: [String],
       required: false,

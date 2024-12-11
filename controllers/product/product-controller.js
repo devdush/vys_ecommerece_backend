@@ -1,10 +1,12 @@
 const Brand = require("../../models/Brand");
 const Category = require("../../models/Category");
 const Product = require("../../models/Product");
+const WarrantyService = require("../../models/WarrantyService");
 
 const postProduct = async (req, res) => {
-  const categoryId = req.body.categoryId;
-  const brandId = req.body.brandId;
+  // const categoryId = req.body.categoryId;
+  // const brandId = req.body.brandId;
+  // const warrantyId = req.body.warrantyId;
   console.log(req.body);
 
   try {
@@ -26,10 +28,12 @@ const postProduct = async (req, res) => {
       otherImages,
       categoryId,
       brandId,
+      warrantyId
     } = req.body;
 
     const foundCategory = await Category.findById(categoryId);
     const foundBrand = await Brand.findById(brandId);
+    const foundWarranty = await WarrantyService.findById(warrantyId);
 
     const newProduct = new Product({
       itemCode,
@@ -58,6 +62,11 @@ const postProduct = async (req, res) => {
       brand: {
         _id: foundBrand._id,
         brandTitle: foundBrand.brandTitle,
+      },
+      warranty: {
+        _id: foundWarranty._id,
+        duration: foundWarranty.duration,
+        imageUrl: foundWarranty.imageUrl,
       },
     });
     await newProduct.save();
@@ -114,7 +123,7 @@ const getProduct = async (req, res) => {
 const getProductByCategory = async (req, res) => {
   const { id } = req.params; // Category ID
   console.log(id);
-  
+
   const filters = req.query; // Query parameters for filtering
 
   try {
