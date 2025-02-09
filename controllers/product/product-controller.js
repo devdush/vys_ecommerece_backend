@@ -170,7 +170,7 @@ const getProductByCategory = async (req, res) => {
 };
 const getFeaturedProducts = async (req, res) => {
   try {
-    console.log("Fetching featured products");
+    
     const featuredProducts = await Product.find({ featured: true });
     res.status(200).json({
       success: true,
@@ -187,7 +187,7 @@ const getFeaturedProducts = async (req, res) => {
 };
 const getOnSaleProducts = async (req, res) => {
   try {
-    console.log("Fetching featured products");
+    
     const onSaleProducts = await Product.find({ onSale: true });
     res.status(200).json({
       success: true,
@@ -204,7 +204,7 @@ const getOnSaleProducts = async (req, res) => {
 };
 const getTopRatedProducts = async (req, res) => {
   try {
-    console.log("Fetching featured products");
+    
     const topRatedProducts = await Product.find({ topRated: true });
     res.status(200).json({
       success: true,
@@ -221,7 +221,7 @@ const getTopRatedProducts = async (req, res) => {
 };
 const getSpecialOfferProducts = async (req, res) => {
   try {
-    console.log("Fetching featured products");
+    
     const specialOffersProducts = await Product.find({ specialOffers: true });
     res.status(200).json({
       success: true,

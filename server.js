@@ -8,6 +8,7 @@ const categoryRouter = require("./routes/category/category");
 const brandRouter = require("./routes/brand/brand-routes");
 const productRouter = require("./routes/product/product-route");
 const warrantyRouter = require("./routes/warranty-service/warranty-service-route");
+const cartRouter = require("./routes/cart/cart");
 mongoose
   .connect(
     "mongodb+srv://vsofttechnologie:i9Q8Yi1UBNZbd3TT1022@cluster0.on4og.mongodb.net/"
@@ -56,5 +57,6 @@ app.use("/api/category", categoryRouter);
 app.use("/api/brand", brandRouter);
 app.use("/api/product", productRouter);
 app.use("/api/warranty", warrantyRouter);
+app.use("/api/cart", cartRouter);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
