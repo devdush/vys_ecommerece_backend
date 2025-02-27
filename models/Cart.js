@@ -10,6 +10,7 @@ const cartSchema = new mongoose.Schema({
         required: true,
       },
       itemCode: { type: String, required: true }, // Sync with Product model
+
       itemName: { type: String, required: true },
       quantity: { type: Number, required: true, min: 1 },
       sales_price: { type: Number, required: true },
