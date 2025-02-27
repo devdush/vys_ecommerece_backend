@@ -26,7 +26,7 @@ app.use(
       // Allow requests from localhost:3000 (React development) and your S3 URL
       const allowedOrigins = [
         "http://localhost:3000",
-        "http://vys.lk.s3-website-us-east-1.amazonaws.com",
+        "http://vys.lk.s3-website.eu-north-1.amazonaws.com/",
       ];
       if (allowedOrigins.includes(origin) || !origin) {
         // If origin is in the allowed list or no origin (for Postman/cURL requests), proceed
