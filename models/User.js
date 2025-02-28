@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const crypto = require("crypto");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -29,6 +30,13 @@ const UserSchema = new mongoose.Schema(
     role: {
       type: String,
       default: "user",
+    },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
     },
   },
   { timestamps: true }

@@ -1,6 +1,10 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const User = require("../../models/User");
+const { sendVerificationEmail } = require("./emailService");
+const { log } = require("console");
+
 const registerUser = async (req, res) => {
   const {
     firstName,
@@ -10,15 +14,19 @@ const registerUser = async (req, res) => {
     secondaryPhoneNumber,
     password,
   } = req.body;
+
   try {
     const checkUser = await User.findOne({ email });
     if (checkUser) {
       return res.json({
         success: false,
-        message: "User already exists with same email address",
+        message: "User already exists with the same email address",
       });
     }
+
     const hashPassword = await bcrypt.hash(password, 12);
+    const verificationToken = crypto.randomBytes(32).toString("hex"); // Generate token
+
     const newUser = new User({
       firstName,
       lastName,
@@ -26,40 +34,57 @@ const registerUser = async (req, res) => {
       primaryPhoneNumber,
       secondaryPhoneNumber,
       password: hashPassword,
+      verificationToken,
     });
+
     await newUser.save();
+
+    // Send email verification link
+    await sendVerificationEmail(email, verificationToken);
+
     res.status(200).json({
       success: true,
-      message: "Registration Successful",
+      message:
+        "Registration successful. Please check your email for verification.",
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       success: false,
-      message: "Some Error",
+      message: "Some error occurred.",
     });
   }
 };
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  
   try {
     const checkUser = await User.findOne({ email });
-    if (!checkUser)
+    if (!checkUser) {
       return res.json({
         success: false,
-        message: "User doesn't exists! Please register first",
+        message: "User doesn't exist! Please register first.",
       });
+    }
+
+    if (!checkUser.verified) {
+      return res.json({
+        success: false,
+        message: "Please verify your email before logging in.",
+      });
+    }
+
     const checkPasswordMatch = await bcrypt.compare(
       password,
       checkUser.password
     );
-    if (!checkPasswordMatch)
+    if (!checkPasswordMatch) {
       return res.json({
         success: false,
-        message: "Incorrect username or password! Please try again",
+        message: "Incorrect username or password! Please try again.",
       });
+    }
 
     const token = jwt.sign(
       {
@@ -71,21 +96,7 @@ const loginUser = async (req, res) => {
       "CLIENT_SECRET_KEY",
       { expiresIn: "500m" }
     );
-    // res.cookie("token", token, { httpOnly: true, secure: true }).json({
-    //   success: true,
-    //   message: "Logged in successfully",
-    //   user: {
-    //     email: checkUser.email,
-    //     firstName: checkUser.firstName,
-    //     lastName: checkUser.lastName,
-    //     primaryPhoneNumber: checkUser.primaryPhoneNumber,
-    //     secondaryPhoneNumber: checkUser.secondaryPhoneNumber,
-    //     role: checkUser.role,
-    //     id: checkUser._id,
-    //   },
-    // });
-    console.log(token);
-    
+
     res.json({
       success: true,
       message: "Logged in successfully",
@@ -104,7 +115,7 @@ const loginUser = async (req, res) => {
     console.log(error);
     res.status(500).json({
       success: false,
-      message: "Some Error",
+      message: "Some error occurred.",
     });
   }
 };
@@ -136,4 +147,41 @@ const authMiddleware = async (req, res, next) => {
     });
   }
 };
-module.exports = { registerUser, loginUser, logoutUser, authMiddleware };
+const verifyEmail = async (req, res) => {
+  console.log("verifyEmail");
+  const { token } = req.query;
+  console.log(token);
+  try {
+    const user = await User.findOne({ verificationToken: token });
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "Invalid or expired verification token.",
+      });
+    }
+
+    user.verified = true;
+    user.verificationToken = null; // Clear token after verification
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Email verified successfully. You can now log in.",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Some error occurred.",
+    });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  authMiddleware,
+  verifyEmail,
+};
