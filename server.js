@@ -26,7 +26,8 @@ app.use(
       const allowedOrigins = [
         "http://localhost:3000",
         "http://vys.lk.s3-website.eu-north-1.amazonaws.com", // Remove trailing slash
-        "https://d2nxkctoz1lsbk.cloudfront.net"
+        "https://d2nxkctoz1lsbk.cloudfront.net",
+        "https://vys.lk"
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
