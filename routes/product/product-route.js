@@ -7,7 +7,8 @@ const {
   getFeaturedProducts,
   getOnSaleProducts,
   getTopRatedProducts,
-  getSpecialOfferProducts
+  getSpecialOfferProducts,
+  deleteProduct
 } = require("../../controllers/product/product-controller");
 
 const router = express.Router();
@@ -21,5 +22,5 @@ router.get("/get/special",getSpecialOfferProducts)
 router.get("/get/:id", getProduct);
 router.get("/get-products/:id", getProductByCategory);
 // router.put("/edit/:id", putMainCategory);
-// router.delete("/delete/:id", deleteMainCategory);
+router.delete("/delete/:id", deleteProduct);
 module.exports = router;

@@ -5,13 +5,13 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: "dhdsfake.1997@gmail.com",
+    user: "info@vys.lk",
     pass: "tdupdrjguwwjtbxw", // Replace with the generated App Password
   },
 });
 
 const sendVerificationEmail = async (email, token) => {
-  const verificationLink = `http://localhost:3000/verify-email/${token}`;
+  const verificationLink = `https://vys.lk/verify-email/${token}`;
 
   const mailOptions = {
     from: "dhdsfake.1997@gmail.com",

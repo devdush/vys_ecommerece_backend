@@ -7,8 +7,7 @@ const postProduct = async (req, res) => {
   // const categoryId = req.body.categoryId;
   // const brandId = req.body.brandId;
   // const warrantyId = req.body.warrantyId;
-  console.log(req.body);
-
+ 
   try {
     const {
       itemCode,
@@ -28,7 +27,7 @@ const postProduct = async (req, res) => {
       otherImages,
       categoryId,
       brandId,
-      warrantyId
+      warrantyId,
     } = req.body;
 
     const foundCategory = await Category.findById(categoryId);
@@ -170,7 +169,6 @@ const getProductByCategory = async (req, res) => {
 };
 const getFeaturedProducts = async (req, res) => {
   try {
-    
     const featuredProducts = await Product.find({ featured: true });
     res.status(200).json({
       success: true,
@@ -187,7 +185,6 @@ const getFeaturedProducts = async (req, res) => {
 };
 const getOnSaleProducts = async (req, res) => {
   try {
-    
     const onSaleProducts = await Product.find({ onSale: true });
     res.status(200).json({
       success: true,
@@ -204,7 +201,6 @@ const getOnSaleProducts = async (req, res) => {
 };
 const getTopRatedProducts = async (req, res) => {
   try {
-    
     const topRatedProducts = await Product.find({ topRated: true });
     res.status(200).json({
       success: true,
@@ -221,7 +217,6 @@ const getTopRatedProducts = async (req, res) => {
 };
 const getSpecialOfferProducts = async (req, res) => {
   try {
-    
     const specialOffersProducts = await Product.find({ specialOffers: true });
     res.status(200).json({
       success: true,
@@ -236,6 +231,39 @@ const getSpecialOfferProducts = async (req, res) => {
     });
   }
 };
+const deleteProduct = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Check if ID is a valid MongoDB ObjectId
+    if (!id || id.length !== 24) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or missing product ID",
+      });
+    }
+
+    const deletedProduct = await Product.findByIdAndDelete(id);
+
+    if (!deletedProduct) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+      data: deletedProduct,
+    });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error occurred while deleting product",
+    });
+  }
+};
 
 module.exports = {
   postProduct,
@@ -246,4 +274,5 @@ module.exports = {
   getOnSaleProducts,
   getTopRatedProducts,
   getSpecialOfferProducts,
+  deleteProduct,
 };
