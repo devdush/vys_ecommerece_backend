@@ -5,8 +5,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: "info@vys.lk",
-    pass: "tdupdrjguwwjtbxw", // Replace with the generated App Password
+    user: "mailservice.vys@gmail.com",
+    pass: "wssrxzrogihsunwa", // Replace with the generated App Password
   },
 });
 
@@ -14,7 +14,7 @@ const sendVerificationEmail = async (email, token) => {
   const verificationLink = `https://vys.lk/verify-email/${token}`;
 
   const mailOptions = {
-    from: "dhdsfake.1997@gmail.com",
+    from: "mailservice.vys@gmail.com",
     to: email,
     subject: "Verify Your Email",
     html: `<p>Click the link below to verify your email:</p>
@@ -23,7 +23,8 @@ const sendVerificationEmail = async (email, token) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Verification email sent.");
+    const timeStamp = new Date().toISOString();
+    console.log("Verification email sent.", timeStamp);
   } catch (error) {
     console.error("Error sending email:", error);
   }
